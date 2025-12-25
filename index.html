@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Christmas Interactive Space</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom animations for the tree lights */
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px currentColor; }
+      }
+      @keyframes rainbow {
+        0% { fill: #ef4444; box-shadow: 0 0 5px #ef4444; } /* red */
+        20% { fill: #eab308; box-shadow: 0 0 5px #eab308; } /* yellow */
+        40% { fill: #22c55e; box-shadow: 0 0 5px #22c55e; } /* green */
+        60% { fill: #3b82f6; box-shadow: 0 0 5px #3b82f6; } /* blue */
+        80% { fill: #a855f7; box-shadow: 0 0 5px #a855f7; } /* purple */
+        100% { fill: #ef4444; box-shadow: 0 0 5px #ef4444; }
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+      .animate-twinkle {
+        animation: twinkle 2s infinite ease-in-out;
+      }
+      .animate-rainbow {
+        animation: rainbow 3s infinite linear;
+      }
+      .animate-float {
+        animation: float 3s infinite ease-in-out;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
