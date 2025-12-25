@@ -56,7 +56,11 @@ const App: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Constants based on current scene
-  const currentSceneConfig = SCENE_CONFIG[scene];
+  const currentSceneConfig = SCENE_CONFIG[scene] || SCENE_CONFIG[SceneType.LAB];
+
+  if (!currentSceneConfig) {
+    return <div className="w-full h-screen bg-black text-white flex items-center justify-center">Loading...</div>;
+  }
 
   // Effects
   useEffect(() => {
