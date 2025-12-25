@@ -1,7 +1,9 @@
 export enum SceneType {
   LAB = 'LAB',
   CLASSROOM = 'CLASSROOM',
-  HOME = 'HOME'
+  HOME = 'HOME',
+  SNOWY = 'SNOWY',
+  FANTASY = 'FANTASY'
 }
 
 export enum LightMode {

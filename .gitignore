@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated images
+Gemini_Generated_Image_*.png
+
+# Env files
+.env
