@@ -1,4 +1,6 @@
-import React from 'react';
+
+
+import React, { useMemo } from 'react';
 import { LightMode } from '../types';
 
 interface ChristmasTreeProps {
@@ -7,51 +9,184 @@ interface ChristmasTreeProps {
 
 const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
   // Helper to determine light class based on mode
-  const getLightClass = (baseColor: string, delay: string) => {
-    if (lightMode === LightMode.STATIC) return baseColor;
-    if (lightMode === LightMode.RAINBOW) return `animate-rainbow ${delay}`;
-    if (lightMode === LightMode.BREATHING) return `${baseColor} animate-twinkle ${delay}`;
-    return baseColor;
+  const getLightClass = (delay: number, colorIndex: number) => {
+    // Base colors for rainbow mode
+    const colors = [
+      'bg-red-500 shadow-[0_0_10px_#ef4444]',
+      'bg-yellow-400 shadow-[0_0_10px_#eab308]',
+      'bg-blue-500 shadow-[0_0_10px_#3b82f6]',
+      'bg-green-400 shadow-[0_0_10px_#4ade80]',
+      'bg-purple-500 shadow-[0_0_10px_#a855f7]',
+      'bg-pink-500 shadow-[0_0_10px_#ec4899]',
+    ];
+
+    if (lightMode === LightMode.STATIC) {
+      // Warm white / Gold static
+      return 'bg-yellow-200 shadow-[0_0_8px_#fef08a] opacity-90';
+    }
+
+    if (lightMode === LightMode.RAINBOW) {
+      const color = colors[colorIndex % colors.length];
+      return `${color} animate-rainbow`;
+    }
+
+    if (lightMode === LightMode.BREATHING) {
+      return 'bg-yellow-200 shadow-[0_0_15px_#fef08a] animate-twinkle';
+    }
+
+    return 'bg-white';
   };
 
+  // Generate lights positions along a spiral path
+  // This memoizes the random positions so they don't jump around on re-renders
+  const lights = useMemo(() => {
+    const coords = [];
+    // Spiral logic: x = r * cos(t), y = t... simplified for a cone
+    // Tree approximate dimensions: Width 200, Height 300. Center 100.
+    // Cone shape: Radius decreases as Y decreases (goes up)
+
+    const twists = 4.5; // How many times it wraps
+    const pointsPerTwist = 8;
+    const startY = 240; // Bottom of foliage
+    const endY = 50;    // Top of foliage
+    const height = startY - endY;
+
+    for (let i = 0; i <= twists * pointsPerTwist; i++) {
+      const progress = i / (twists * pointsPerTwist);
+      const y = startY - (progress * height);
+
+      // Radius at this height (Cone shape: wider at bottom)
+      // Max radius approx 80 at bottom, 10 at top
+      const currentRadius = 80 * (1 - progress * 0.9);
+
+      // Angle
+      const angle = progress * Math.PI * 2 * twists;
+
+      // Oval correction (perspective)
+      const x = 100 + Math.cos(angle) * currentRadius;
+      // Adjust z-index simulation? Lights on the "back" should be dimmer or hidden?
+      // Let's just show front lights for simplicity or slightly dim back ones if we wanted logic.
+      // For "Wire", we want a continuous line.
+
+      // Only add if it's kinda "in front" to look realistic (sin(angle) > -0.2)
+      const isFront = Math.sin(angle) > -0.5;
+
+      // Slight randomization
+      const randX = (Math.random() - 0.5) * 5;
+      const randY = (Math.random() - 0.5) * 5;
+
+      if (isFront) {
+        coords.push({
+          x: x + randX,
+          y: y + randY,
+          delay: Math.random() * 2,
+          colorIdx: Math.floor(Math.random() * 6)
+        });
+      }
+    }
+    return coords;
+  }, []);
+
   return (
-    <div className="relative w-64 h-80 md:w-80 md:h-96 flex justify-center items-end select-none">
-      {/* Shadow */}
-      <div className="absolute bottom-0 w-32 h-8 bg-black/40 blur-xl rounded-full translate-y-2"></div>
-      
-      <svg viewBox="0 0 200 300" className="w-full h-full drop-shadow-2xl z-10">
+    <div className="relative w-80 h-96 flex justify-center items-end select-none drop-shadow-2xl">
+      {/* Container for the realistic tree */}
+      <svg viewBox="0 0 200 300" className="w-full h-full z-10 overflow-visible">
+        <defs>
+          <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3E2723" />
+            <stop offset="50%" stopColor="#5D4037" />
+            <stop offset="100%" stopColor="#3E2723" />
+          </linearGradient>
+
+          <radialGradient id="needleGrad" cx="50%" cy="50%" r="50%" fx="25%" fy="25%">
+            <stop offset="0%" stopColor="#2E7D32" />
+            <stop offset="100%" stopColor="#1B5E20" />
+          </radialGradient>
+
+          <filter id="fuzzy" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="3" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
+          </filter>
+
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Shadow Base */}
+        <ellipse cx="100" cy="270" rx="60" ry="10" fill="black" opacity="0.3" filter="url(#glow)" />
+
         {/* Trunk */}
-        <rect x="90" y="250" width="20" height="40" fill="#5D4037" />
-        
-        {/* Leaves Layers */}
-        {/* Bottom Layer */}
-        <path d="M20 250 L180 250 L100 150 Z" fill="#1b4d2e" />
-        {/* Middle Layer */}
-        <path d="M40 180 L160 180 L100 80 Z" fill="#2d6a4f" />
-        {/* Top Layer */}
-        <path d="M60 110 L140 110 L100 20 Z" fill="#40916c" />
-        
-        {/* Star */}
-        <polygon 
-          points="100,10 90,40 120,20 80,20 110,40" 
-          fill="#ffd700" 
-          className="animate-[pulse_3s_infinite]"
+        <rect x="90" y="240" width="20" height="40" fill="url(#trunkGrad)" rx="2" />
+
+        {/* Tree Layers - Using lots of paths for texture */}
+        {/* Layer 5 (Bottom) */}
+        <path d="M20 250 Q100 270 180 250 L100 130 Z" fill="url(#needleGrad)" filter="url(#fuzzy)" />
+        <path d="M20 250 Q100 270 180 250 L100 130 Z" fill="none" stroke="#1B5E20" strokeWidth="1" opacity="0.5" />
+
+        {/* Layer 4 */}
+        <path d="M30 215 Q100 235 170 215 L100 100 Z" fill="url(#needleGrad)" filter="url(#fuzzy)" />
+
+        {/* Layer 3 */}
+        <path d="M40 180 Q100 200 160 180 L100 70 Z" fill="url(#needleGrad)" filter="url(#fuzzy)" />
+
+        {/* Layer 2 */}
+        <path d="M50 145 Q100 165 150 145 L100 45 Z" fill="url(#needleGrad)" filter="url(#fuzzy)" />
+
+        {/* Layer 1 (Top) */}
+        <path d="M65 110 Q100 125 135 110 L100 20 Z" fill="url(#needleGrad)" filter="url(#fuzzy)" />
+
+
+        {/* The Wire (Simulation) */}
+        {/* A dark semi-transparent line tracing the path of lights roughly */}
+        <path
+          d="M100 40 
+              Q 120 50, 110 70 
+              T 80 100 
+              T 130 140 
+              T 70 190 
+              T 150 240"
+          fill="none"
+          stroke="#000"
+          strokeWidth="1.5"
+          opacity="0.4"
+          strokeLinecap="round"
         />
 
-        {/* Lights (Ornaments) */}
-        {/* Positions approximate to fit on the tree layers */}
-        <circle cx="70" cy="220" r="6" className={getLightClass('fill-red-500', 'delay-0')} />
-        <circle cx="130" cy="230" r="6" className={getLightClass('fill-blue-400', 'delay-75')} />
-        <circle cx="100" cy="200" r="6" className={getLightClass('fill-yellow-400', 'delay-150')} />
-        
-        <circle cx="80" cy="150" r="5" className={getLightClass('fill-purple-400', 'delay-100')} />
-        <circle cx="120" cy="160" r="5" className={getLightClass('fill-red-500', 'delay-300')} />
-        <circle cx="100" cy="130" r="5" className={getLightClass('fill-cyan-400', 'delay-500')} />
-        
-        <circle cx="90" cy="80" r="4" className={getLightClass('fill-yellow-300', 'delay-200')} />
-        <circle cx="110" cy="90" r="4" className={getLightClass('fill-pink-400', 'delay-600')} />
-        <circle cx="100" cy="60" r="4" className={getLightClass('fill-green-300', 'delay-700')} />
+        {/* Star */}
+        <g transform="translate(100, 20)" className="animate-[pulse_4s_infinite]">
+          <path d="M0 -15 L4 -4 L15 -4 L6 4 L9 15 L0 8 L-9 15 L-6 4 L-15 -4 L-4 -4 Z" fill="#FFD700" filter="url(#glow)" />
+        </g>
       </svg>
+
+      {/* HTML Overlay for LED Lights (Better for glow effects than SVG) */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
+        <svg viewBox="0 0 200 300" className="w-full h-full overflow-visible">
+          {lights.map((pos, i) => (
+            <g key={i} transform={`translate(${pos.x}, ${pos.y})`}>
+              {/* The Wire Connection (Tiny segment) could go here but main wire is above */}
+
+              {/* Bulb Holder */}
+              <rect x="-1" y="-3" width="2" height="3" fill="#222" />
+
+              {/* The Light Bulb - Using foreignObject to use Tailwind shadows easily or just SVG filters */}
+              <circle
+                r="3.5"
+                className={`transition-all duration-1000 ${getLightClass(pos.delay, pos.colorIdx)}`}
+                style={{
+                  animationDelay: `${pos.delay}s`,
+                  animationDuration: lightMode === LightMode.RAINBOW ? '3s' : '2s'
+                }}
+              />
+            </g>
+          ))}
+        </svg>
+      </div>
+
     </div>
   );
 };

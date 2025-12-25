@@ -23,6 +23,9 @@ const App: React.FC = () => {
   const [quote, setQuote] = useState<string>("點擊按鈕獲取祝福！");
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
+  const [characterPos, setCharacterPos] = useState({ x: -100, y: -100 }); // Start hidden
+  const [isFloating, setIsFloating] = useState(false);
+
   // Audio State
   const [currentSong, setCurrentSong] = useState<Song>(SONGS[0]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -37,6 +40,26 @@ const App: React.FC = () => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleGlobalMouseMove = (e: React.MouseEvent) => {
+    if (isFloating) {
+      setCharacterPos({ x: e.clientX, y: e.clientY });
+    }
+  };
+
+  const handleGlobalClick = (e: React.MouseEvent) => {
+    // Ignore clicks on controls (inputs, buttons, selects) to prevent unwanted drops/pickups
+    if ((e.target as HTMLElement).closest('button, select, input')) return;
+
+    // Toggle floating state
+    if (selectedChar) {
+      setIsFloating(!isFloating);
+      // Update position immediately on pickup
+      if (!isFloating) {
+        setCharacterPos({ x: e.clientX, y: e.clientY });
+      }
+    }
+  };
 
   useEffect(() => {
     // Audio control
@@ -76,13 +99,15 @@ const App: React.FC = () => {
 
   return (
     <div
-      className={`relative min-h-screen w-full transition-all duration-1000 ease-in-out overflow-hidden flex flex-col font-sans text-white ${currentSceneConfig.bgClass}`}
+      className={`relative min-h-screen w-full transition-all duration-1000 ease-in-out overflow-hidden flex flex-col font-sans text-white ${currentSceneConfig.bgClass} ${isFloating ? 'cursor-none' : ''}`}
       style={{
         backgroundImage: currentSceneConfig.bgImage ? `url(${currentSceneConfig.bgImage})` : undefined,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
       }}
+      onMouseMove={handleGlobalMouseMove}
+      onClick={handleGlobalClick}
     >
 
       {/* Background Audio */}
@@ -90,6 +115,13 @@ const App: React.FC = () => {
 
       {/* Snowfall Effect */}
       <Snowfall />
+
+      {/* Character Follower (Fixed Overlay) */}
+      <CharacterDisplay
+        character={selectedChar}
+        position={characterPos}
+        isFloating={isFloating}
+      />
 
       {/* Main Content Container */}
       <div className="relative z-10 flex-grow flex flex-col items-center justify-center p-4">
@@ -101,10 +133,9 @@ const App: React.FC = () => {
           </p>
         </div>
 
-        {/* Center Scene: Tree + Character */}
+        {/* Center Scene: Tree Only (Character moved to floating) */}
         <div className="flex flex-col md:flex-row items-end justify-center items-center gap-4">
           <ChristmasTree lightMode={lightMode} />
-          <CharacterDisplay character={selectedChar} />
         </div>
 
       </div>
@@ -146,6 +177,9 @@ const App: React.FC = () => {
                 onChange={(e) => {
                   const char = CHARACTERS.find(c => c.id === e.target.value);
                   setSelectedChar(char || null);
+                  // Auto pick up when selecting new character
+                  setIsFloating(true);
+                  // Set initial pos to center or update on next mousemove
                 }}
                 value={selectedChar?.id || ""}
               >
@@ -164,9 +198,14 @@ const App: React.FC = () => {
               <div className="flex gap-2">
                 <button
                   onClick={toggleLightMode}
-                  className="flex-1 bg-gradient-to-r from-yellow-500/80 to-orange-500/80 hover:from-yellow-400 hover:to-orange-400 py-2 rounded-lg text-xs font-bold shadow-lg transition-transform active:scale-95"
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2
+                    ${lightMode === LightMode.STATIC ? 'bg-gradient-to-r from-yellow-500/80 to-orange-500/80' :
+                      lightMode === LightMode.RAINBOW ? 'bg-gradient-to-r from-red-500/80 to-blue-500/80 animate-pulse' :
+                        'bg-gradient-to-r from-green-500/80 to-emerald-500/80'}`}
                 >
-                  切換燈光
+                  <Icons.Lightbulb />
+                  {lightMode === LightMode.STATIC ? '靜態暖光' :
+                    lightMode === LightMode.RAINBOW ? '彩虹閃爍' : '呼吸模式'}
                 </button>
                 <button
                   onClick={handleRandomQuote}

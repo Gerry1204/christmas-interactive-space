@@ -3,9 +3,9 @@ import { Character, SceneType, Song } from './types';
 // Images (Updated to match User's renaming)
 import jakeImg from './assets/images/老皮.png';
 import doraImg from './assets/images/doraemon12.png';
-import usagiImg from './assets/images/烏薩奇.jpg';
+import usagiImg from './assets/images/烏薩奇2.png';
 import snorlaxImg from './assets/images/卡比獸.png';
-import patrickImg from './assets/images/派大星.webp';
+import patrickImg from './assets/images/派大星2.png';
 
 // Backgrounds (Updated to match User's renaming)
 import bgLab from './assets/images/scene_研究小間.png';
