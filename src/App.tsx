@@ -19,6 +19,7 @@ const Icons = {
 };
 
 const App: React.FC = () => {
+  console.log("App Rendering..."); // Debug log
   // State
   const [scene, setScene] = useState<SceneType>(SceneType.LAB);
   const [lightMode, setLightMode] = useState<LightMode>(LightMode.STATIC);

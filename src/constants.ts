@@ -1,33 +1,33 @@
 import { Character, SceneType, Song, Gift } from './types';
 
 // Images (Updated to match User's renaming)
-import jakeImg from './assets/images/老皮.png';
-import doraImg from './assets/images/doraemon12.png';
-import usagiImg from './assets/images/烏薩奇2.png';
-import snorlaxImg from './assets/images/卡比獸.png';
-import patrickImg from './assets/images/派大星2.png';
+import jakeImg from './assets/images/jake.png';
+import doraImg from './assets/images/doraemon.png';
+import usagiImg from './assets/images/usagi.png';
+import snorlaxImg from './assets/images/snorlax.png';
+import patrickImg from './assets/images/patrick.png';
 
 // Backgrounds (Updated to match User's renaming)
-import bgLab from './assets/images/scene_研究小間.png';
-import bgClass from './assets/images/scene_社課教室.png';
-import bgHome from './assets/images/scene_家.png';
-import bgSnowy from './assets/images/scene_穿堂.png';
-import bgFantasy from './assets/images/scene_操場.png';
+import bgLab from './assets/images/scene_lab.png';
+import bgClass from './assets/images/scene_classroom.png';
+import bgHome from './assets/images/scene_home.png';
+import bgSnowy from './assets/images/scene_snowy.png';
+import bgFantasy from './assets/images/scene_fantasy.png';
 
 // Gift Images
-import coneImg from './assets/images/三角錐.jpg';
-import hatImg from './assets/images/工地帽.webp';
-import ramImg from './assets/images/天價記憶體.jfif';
-import btcImg from './assets/images/比特幣.webp';
-import headphoneImg from './assets/images/耳機.jpg';
-import pillowImg from './assets/images/抱枕.jpeg';
-import detergentImg from './assets/images/洗衣粉.jpg';
-import tapeImg from './assets/images/修正帶.jfif';
-import teaImg from './assets/images/茶包.jpg';
-import pcImg from './assets/images/電腦.jpg';
-import moneyImg from './assets/images/錢.jfif';
-import shovelImg from './assets/images/鏟子.webp';
-import gpuImg from './assets/images/顯卡.jpeg';
+import coneImg from './assets/images/cone.jpg';
+import hatImg from './assets/images/hat.webp';
+import ramImg from './assets/images/ram.jfif';
+import btcImg from './assets/images/btc.webp';
+import headphoneImg from './assets/images/headphone.jpg';
+import pillowImg from './assets/images/pillow.jpeg';
+import detergentImg from './assets/images/detergent.jpg';
+import tapeImg from './assets/images/tape.jfif';
+import teaImg from './assets/images/tea.jpg';
+import pcImg from './assets/images/computer.jpg';
+import moneyImg from './assets/images/money.jfif';
+import shovelImg from './assets/images/shovel.webp';
+import gpuImg from './assets/images/gpu.jpeg';
 // Quotes
 export const QUOTES = [
   "🎄 聖誕快樂！希望你的程式碼沒有 Bug！",
