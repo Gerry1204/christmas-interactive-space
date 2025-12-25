@@ -126,15 +126,11 @@ const App: React.FC = () => {
                     key={s}
                     onClick={() => setScene(s)}
                     className={`flex-1 min-w-[60px] py-2 px-1 rounded-lg text-xs font-medium transition-all ${scene === s
-                        ? 'bg-white text-black shadow-lg scale-105'
-                        : 'bg-black/30 text-white/70 hover:bg-black/50'
+                      ? 'bg-white text-black shadow-lg scale-105'
+                      : 'bg-black/30 text-white/70 hover:bg-black/50'
                       }`}
                   >
-                    {s === SceneType.LAB ? '實驗室'
-                      : s === SceneType.CLASSROOM ? '教室'
-                        : s === SceneType.HOME ? '家'
-                          : s === SceneType.SNOWY ? '冰雪'
-                            : '夢幻'}
+                    {SCENE_CONFIG[s].description}
                   </button>
                 ))}
               </div>

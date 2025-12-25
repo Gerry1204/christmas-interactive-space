@@ -1,18 +1,18 @@
 import { Character, SceneType, Song } from './types';
 
-// Images
-import jakeImg from './assets/images/JaketheDog.png';
+// Images (Updated to match User's renaming)
+import jakeImg from './assets/images/老皮.png';
 import doraImg from './assets/images/doraemon12.png';
-import mainImg from './assets/images/main.png';
-import secret1Img from './assets/images/517d4ea58fa6c12aca4e035cdbf257b6.jpg';
-import secret2Img from './assets/images/7e9b9d24c6541f535f825e2bf2b257aa.webp';
+import usagiImg from './assets/images/烏薩奇.jpg';
+import snorlaxImg from './assets/images/卡比獸.png';
+import patrickImg from './assets/images/派大星.webp';
 
-// Backgrounds (Gemini Generated)
-import bgLab from './assets/images/Gemini_Generated_Image_4h49m84h49m84h49.png';
-import bgClass from './assets/images/Gemini_Generated_Image_jhdzkbjhdzkbjhdz.png';
-import bgHome from './assets/images/Gemini_Generated_Image_kf87w9kf87w9kf87.png';
-import bgSnowy from './assets/images/Gemini_Generated_Image_mdrcpnmdrcpnmdrc.png';
-import bgFantasy from './assets/images/Gemini_Generated_Image_u2hatwu2hatwu2ha.png';
+// Backgrounds (Updated to match User's renaming)
+import bgLab from './assets/images/scene_研究小間.png';
+import bgClass from './assets/images/scene_社課教室.png';
+import bgHome from './assets/images/scene_家.png';
+import bgSnowy from './assets/images/scene_穿堂.png';
+import bgFantasy from './assets/images/scene_操場.png';
 
 export const QUOTES = [
   "🎄 聖誕快樂！希望你的程式碼沒有 Bug！",
@@ -49,21 +49,21 @@ export const CHARACTERS: Character[] = [
     width: 'w-24 md:w-36'
   },
   {
-    id: 'usagi', // Mapped to main.png as placeholder or specific character
-    name: '小可愛',
-    imageUrl: mainImg,
+    id: 'usagi',
+    name: '烏薩奇',
+    imageUrl: usagiImg,
     width: 'w-24 md:w-36'
   },
   {
-    id: 'secret1',
-    name: '神祕訪客 A',
-    imageUrl: secret1Img,
-    width: 'w-24 md:w-36'
+    id: 'snorlax',
+    name: '卡比獸',
+    imageUrl: snorlaxImg,
+    width: 'w-32 md:w-56' // Snorlax is big
   },
   {
-    id: 'secret2',
-    name: '神祕訪客 B',
-    imageUrl: secret2Img,
+    id: 'patrick',
+    name: '派大星',
+    imageUrl: patrickImg,
     width: 'w-24 md:w-36'
   }
 ];
@@ -74,7 +74,7 @@ export const SCENE_CONFIG = {
     bgImage: bgLab,
     accentColor: 'text-cyan-400',
     glassClass: 'bg-slate-800/30 border-slate-600/30',
-    description: 'Lab 實驗室'
+    description: '研究小間'
   },
   [SceneType.CLASSROOM]: {
     bgClass: 'bg-stone-800', // Fallback
@@ -95,13 +95,13 @@ export const SCENE_CONFIG = {
     bgImage: bgSnowy,
     accentColor: 'text-blue-200',
     glassClass: 'bg-blue-800/30 border-blue-400/30',
-    description: '冰雪森林'
+    description: '校園穿堂'
   },
   [SceneType.FANTASY]: {
     bgClass: 'bg-purple-900', // Fallback
     bgImage: bgFantasy,
     accentColor: 'text-pink-300',
     glassClass: 'bg-purple-800/30 border-pink-500/30',
-    description: '夢幻世界'
+    description: '夜間操場'
   }
 };
