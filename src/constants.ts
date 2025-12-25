@@ -15,19 +15,19 @@ import bgSnowy from './assets/images/scene_snowy.png';
 import bgFantasy from './assets/images/scene_fantasy.png';
 
 // Gift Images
-import coneImg from './assets/images/cone.jpg';
-import hatImg from './assets/images/hat.webp';
-import ramImg from './assets/images/ram.jfif';
-import btcImg from './assets/images/btc.webp';
-import headphoneImg from './assets/images/headphone.jpg';
-import pillowImg from './assets/images/pillow.jpeg';
-import detergentImg from './assets/images/detergent.jpg';
-import tapeImg from './assets/images/tape.jfif';
-import teaImg from './assets/images/tea.jpg';
-import pcImg from './assets/images/computer.jpg';
-import moneyImg from './assets/images/money.jfif';
-import shovelImg from './assets/images/shovel.webp';
-import gpuImg from './assets/images/gpu.jpeg';
+import coneImg from './assets/images/cone.png';
+import hatImg from './assets/images/hat.png';
+import ramImg from './assets/images/ram.png';
+import btcImg from './assets/images/btc.png';
+import headphoneImg from './assets/images/headphone.png';
+import pillowImg from './assets/images/pillow.png';
+import detergentImg from './assets/images/detergent.png';
+import tapeImg from './assets/images/tape.png';
+import teaImg from './assets/images/tea.png';
+import pcImg from './assets/images/computer.png';
+import moneyImg from './assets/images/money.png';
+import shovelImg from './assets/images/shovel.png';
+import gpuImg from './assets/images/gpu.png';
 // Quotes
 export const QUOTES = [
   "🎄 聖誕快樂！希望你的程式碼沒有 Bug！",

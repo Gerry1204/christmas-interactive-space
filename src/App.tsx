@@ -179,7 +179,15 @@ const App: React.FC = () => {
     >
 
       {/* Background Audio */}
-      <audio ref={audioRef} src={currentSong.url} loop />
+      <audio
+        ref={audioRef}
+        src={currentSong?.url}
+        loop
+        onError={(e) => {
+          console.error("Audio Load Error:", e);
+          setIsPlaying(false);
+        }}
+      />
 
       {/* Snowfall Effect */}
       <Snowfall />
