@@ -1,6 +1,7 @@
-# 🎄 Christmas Interactive Space
+# 🎄 Christmas Interactive Space 🎅
+[![Deploy to GitHub Pages](https://github.com/gerry1204/christmas-interactive-space/actions/workflows/deploy.yml/badge.svg)](https://github.com/gerry1204/christmas-interactive-space/actions/workflows/deploy.yml)
 
-一個充滿節日氛圍的互動式網頁應用，專為聖誕節打造。在這個虛擬空間中，您可以切換不同的場景、召喚可愛的夥伴、調整聖誕樹的燈光氛圍，並聆聽放鬆的 Lo-Fi 音樂。
+一個充滿節日氛圍的互動式網頁，讓你的螢幕充滿聖誕氣息！✨節打造。在這個虛擬空間中，您可以切換不同的場景、召喚可愛的夥伴、調整聖誕樹的燈光氛圍，並聆聽放鬆的 Lo-Fi 音樂。
 
 ## ✨ 特色功能 (Features)
 
