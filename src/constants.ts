@@ -59,11 +59,13 @@ export const GIFTS: Gift[] = [
   { id: 'gpu', text: "NVIDIA 顯卡", imageUrl: gpuImg, description: "跑 AI 還是打遊戲？都行！", isPrank: false },
 ];
 
-// 音樂 placeholder (使用無版權或簡單的音效連結)
+// 音樂 (來自 Kevin MacLeod - Creative Commons)
 export const SONGS: Song[] = [
-  { id: 1, title: "Cozy Lo-Fi", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { id: 2, title: "Jingle Bell Rock", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-  { id: 3, title: "Silent Night", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" }
+  { id: 1, title: "Jingle Bells", url: "https://archive.org/download/Kevin_MacLeod_-_Jingle_Bells/Jingle_Bells.mp3" },
+  { id: 2, title: "Deck the Halls", url: "https://archive.org/download/Kevin_MacLeod_-_Deck_the_Halls_B/Deck_the_Halls_B.mp3" },
+  { id: 3, title: "We Wish You a Merry Christmas", url: "https://archive.org/download/Kevin_MacLeod_-_We_Wish_You_a_Merry_Christmas/We_Wish_You_a_Merry_Christmas.mp3" },
+  { id: 4, title: "Silent Night", url: "https://archive.org/download/Kevin_MacLeod_-_Silent_Night/Silent_Night.mp3" },
+  { id: 5, title: "Sugar Plum Fairy", url: "https://archive.org/download/Kevin_MacLeod_-_Dance_of_the_Sugar_Plum_Fairy/Dance_of_the_Sugar_Plum_Fairy.mp3" }
 ];
 
 export const CHARACTERS: Character[] = [
