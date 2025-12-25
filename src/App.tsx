@@ -77,8 +77,8 @@ const App: React.FC = () => {
   };
 
   const handleGlobalClick = (e: React.MouseEvent) => {
-    // Ignore clicks on controls (inputs, buttons, selects) to prevent unwanted drops/pickups
-    if ((e.target as HTMLElement).closest('button, select, input')) return;
+    // Ignore clicks on controls/sidebars to prevent unwanted drops/pickups
+    if ((e.target as HTMLElement).closest('button, select, input, .sidebar-content')) return;
 
     // Toggle floating state
     if (selectedChar) {
@@ -91,18 +91,18 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    // Audio control
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play().catch(e => {
-          console.warn("Autoplay prevented:", e);
-          setIsPlaying(false);
+    // When song changes, if we are already playing, ensure new song plays
+    if (isPlaying && audioRef.current) {
+      // give React a moment to update the src prop
+      const playPromise = audioRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          console.warn("Auto-play on song change failed:", e);
+          // We don't turn off isPlaying here to account for rapid switching
         });
-      } else {
-        audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentSong]);
+  }, [currentSong]);
 
   // Handlers
   const handleRandomQuote = () => {
@@ -208,7 +208,7 @@ const App: React.FC = () => {
       </button>
 
       {/* === MOBILE FULLSCREEN MENU === */}
-      <div className={`fixed inset-0 z-50 bg-black/90 backdrop-blur-xl transition-all duration-300 overflow-y-auto lg:hidden flex flex-col ${showMobileMenu ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'}`}>
+      <div className={`fixed inset-0 z-50 bg-black/90 backdrop-blur-xl transition-all duration-300 overflow-y-auto lg:hidden flex flex-col sidebar-content ${showMobileMenu ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full pointer-events-none'}`}>
 
         <div className="flex justify-between items-center p-6 border-b border-white/10 sticky top-0 bg-black/50 backdrop-blur-md z-10">
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -440,7 +440,7 @@ const App: React.FC = () => {
       </div>
 
       {/* --- LEFT SIDEBAR: Scene & Character --- */}
-      <div className="hidden lg:flex fixed left-6 top-1/2 transform -translate-y-1/2 z-20 w-72 flex-col gap-6">
+      <div className="hidden lg:flex fixed left-6 top-1/2 transform -translate-y-1/2 z-20 w-72 flex-col gap-6 sidebar-content">
         <div className={`p-5 rounded-3xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-6 transition-all duration-500`}>
 
           {/* Scene Switcher */}
@@ -500,7 +500,7 @@ const App: React.FC = () => {
       </div>
 
       {/* --- RIGHT SIDEBAR: Light & Music --- */}
-      <div className="hidden lg:flex fixed right-6 top-1/2 transform -translate-y-1/2 z-20 w-80 flex-col gap-6">
+      <div className="hidden lg:flex fixed right-6 top-1/2 transform -translate-y-1/2 z-20 w-80 flex-col gap-6 sidebar-content">
         <div className={`p-5 rounded-3xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-5 transition-all duration-500`}>
 
           {/* Light Controls */}
@@ -591,8 +591,24 @@ const App: React.FC = () => {
             </label>
             <div className="flex items-center gap-3 bg-black/20 rounded-2xl p-3 pr-4 border border-white/5 hover:bg-black/30 transition-colors">
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 hover:scale-105 transition-all text-white"
+                onClick={() => {
+                  console.log("Play button clicked");
+                  if (isPlaying) {
+                    audioRef.current?.pause();
+                    setIsPlaying(false);
+                  } else {
+                    // Optimistic update: Show "Pause" icon immediately to indicate we are trying to play
+                    setIsPlaying(true);
+
+                    audioRef.current?.play()
+                      .catch(e => {
+                        console.error("Play failed:", e);
+                        // Revert if it actually fails (e.g. network error)
+                        setIsPlaying(false);
+                      });
+                  }
+                }}
+                className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 hover:scale-105 transition-all text-white active:scale-95"
               >
                 {isPlaying ? <Icons.Pause /> : <Icons.Play />}
               </button>
