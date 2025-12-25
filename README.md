@@ -1,20 +1,66 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🎄 Christmas Interactive Space
 
-# Run and deploy your AI Studio app
+一個充滿節日氛圍的互動式網頁應用，專為聖誕節打造。在這個虛擬空間中，您可以切換不同的場景、召喚可愛的夥伴、調整聖誕樹的燈光氛圍，並聆聽放鬆的 Lo-Fi 音樂。
 
-This contains everything you need to run your app locally.
+## ✨ 特色功能 (Features)
 
-View your app in AI Studio: https://ai.studio/apps/drive/1H-3FsXPV3Wbrzg0L0i1AMRHDvuzTXrar
+### 1. 🌟 互動式聖誕樹 (Realistic Interactive Tree)
+- **逼真質感**：採用 SVG 分層渲染，模擬真實松葉紋理與纏繞的燈串。
+- **多種燈光模式**：
+  - **單色恆亮 (Static)**：經典且溫馨，支援自訂顏色與玻璃透亮質感。
+  - **彩虹閃爍 (Rainbow)**：動態變換的七彩燈光效果。
+  - **呼吸律動 (Breathing)**：柔和的忽明忽暗效果，營造寧靜氛圍。
+- **完全客製化**：可自由調整燈光 **亮度**、**閃爍速度** 以及 **燈泡顏色**。
 
-## Run Locally
+### 2. 🏠 場景與氛圍 (Scenes & Atmosphere)
+- 提供多種精美背景場景（如：溫馨實驗室、雪景窗邊等），點擊左側選單即可切換。
+- **動態雪花**：全螢幕的飄雪效果，增添冬日氣息。
 
-**Prerequisites:**  Node.js
+### 3. 👾 夥伴召喚 (Character Companion)
+- **角色選擇**：可從左側選單召喚不同的像素風格夥伴（如：烏薩奇、派大星等）。
+- **互動操作**：
+  - **跟隨模式**：角色會跟隨滑鼠游標移動。
+  - **固定模式**：點擊畫面任意處，即可將角色固定在該位置。
 
+### 4. 📱 響應式設計 (Responsive Design)
+- **桌面版優化**：
+  - **左側邊欄**：場景切換、角色選擇。
+  - **右側邊欄**：燈光控制、音樂播放、時鐘顯示。
+- **手機版優化**：
+  - 自動隱藏兩側面板，保留乾淨的主視覺。
+  - **專屬設定按鈕**：右上角提供浮動按鈕，開啟全螢幕控制台，單手也能輕鬆調整所有設定。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### 5. 🎵 音樂播放器 (Music Player)
+- 內建精選 Lo-Fi 聖誕背景音樂。
+- 支援播放/暫停與曲目切換。
+- 顯示現在播放 (Now Playing) 資訊。
+
+## 🛠️ 技術棧 (Tech Stack)
+- **React 18**
+- **TypeScript**
+- **Vite**
+- **Tailwind CSS**
+
+## 🚀 如何執行 (How to Run)
+
+1. **安裝依賴**
+   ```bash
+   npm install
+   ```
+
+2. **啟動開發伺服器**
+   ```bash
+   npm run dev
+   ```
+
+3. **開啟瀏覽器**
+   前往終端機顯示的網址 (通常是 `http://localhost:5173`) 即可體驗！
+
+## 🎮 操作指南
+
+- **桌機版**：直接使用畫面兩側的半透明懸浮面板進行設定。
+- **手機版**：點擊畫面右上角的「設定 (⚙️)」圖示，展開完整控制選單。
+- **角色互動**：選取角色後，角色預設會跟隨滑鼠；**點擊左鍵**可將其固定在原地，再次點擊則恢復跟隨。
+
+---
+祝您聖誕快樂！ Merry Christmas! 🎅🎁
