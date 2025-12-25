@@ -1,13 +1,14 @@
-
-
 import React, { useMemo } from 'react';
 import { LightMode } from '../types';
 
 interface ChristmasTreeProps {
   lightMode: LightMode;
+  brightness: number;
+  speed: number;
+  customColor: string;
 }
 
-const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
+const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode, brightness, speed, customColor }) => {
   // Helper to determine light class based on mode
   const getLightClass = (delay: number, colorIndex: number) => {
     // Base colors for rainbow mode
@@ -21,8 +22,8 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
     ];
 
     if (lightMode === LightMode.STATIC) {
-      // Warm white / Gold static
-      return 'bg-yellow-200 shadow-[0_0_8px_#fef08a] opacity-90';
+      // Just basic transition, color handled by inline style
+      return 'duration-500';
     }
 
     if (lightMode === LightMode.RAINBOW) {
@@ -31,7 +32,7 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
     }
 
     if (lightMode === LightMode.BREATHING) {
-      return 'bg-yellow-200 shadow-[0_0_15px_#fef08a] animate-twinkle';
+      return 'animate-twinkle';
     }
 
     return 'bg-white';
@@ -144,11 +145,11 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
         {/* The Wire (Simulation) */}
         {/* A dark semi-transparent line tracing the path of lights roughly */}
         <path
-          d="M100 40 
-              Q 120 50, 110 70 
-              T 80 100 
-              T 130 140 
-              T 70 190 
+          d="M100 40
+              Q 120 50, 110 70
+              T 80 100
+              T 130 140
+              T 70 190
               T 150 240"
           fill="none"
           stroke="#000"
@@ -166,24 +167,50 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode }) => {
       {/* HTML Overlay for LED Lights (Better for glow effects than SVG) */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
         <svg viewBox="0 0 200 300" className="w-full h-full overflow-visible">
-          {lights.map((pos, i) => (
-            <g key={i} transform={`translate(${pos.x}, ${pos.y})`}>
-              {/* The Wire Connection (Tiny segment) could go here but main wire is above */}
+          {lights.map((pos, i) => {
+            const isStaticOrBreathing = lightMode === LightMode.STATIC || lightMode === LightMode.BREATHING;
 
-              {/* Bulb Holder */}
-              <rect x="-1" y="-3" width="2" height="3" fill="#222" />
+            // For static mode, we want a "glass" look if brightness is low, or glowing color if high
+            // Actually, user wants "default transparent" look for LEDs (like clear bulbs) that light up.
 
-              {/* The Light Bulb - Using foreignObject to use Tailwind shadows easily or just SVG filters */}
-              <circle
-                r="3.5"
-                className={`transition-all duration-1000 ${getLightClass(pos.delay, pos.colorIdx)}`}
-                style={{
-                  animationDelay: `${pos.delay}s`,
-                  animationDuration: lightMode === LightMode.RAINBOW ? '3s' : '2s'
-                }}
-              />
-            </g>
-          ))}
+            return (
+              <g key={i} transform={`translate(${pos.x}, ${pos.y})`}>
+                {/* Bulb Holder */}
+                <rect x="-1" y="-3" width="2" height="3" fill="#222" />
+
+                {/* The Light Bulb */}
+                <circle
+                  r="4" // Slightly bigger bulb
+                  className={`transition-all duration-300 ${getLightClass(pos.delay, pos.colorIdx)}`}
+                  style={{
+                    animationDelay: `${pos.delay}s`,
+                    animationDuration: `${speed}s`,
+
+                    // Logic: 
+                    // If Static/Breathing: Use customColor but add opacity handling.
+                    // If Rainbow: It uses classes.
+
+                    backgroundColor: isStaticOrBreathing
+                      ? customColor
+                      : undefined,
+
+                    // Make it look like a light source
+                    boxShadow: isStaticOrBreathing
+                      ? `0 0 ${10 * brightness}px ${2 * brightness}px ${customColor}`
+                      : undefined,
+
+                    opacity: (lightMode === LightMode.STATIC) ? Math.max(0.3, brightness) : undefined,
+
+                    // Add a "shine" or "glass" feel via standard stroke or just brightness
+                    filter: `brightness(${brightness * 1.5}) drop-shadow(0 0 ${5 * brightness}px ${isStaticOrBreathing ? customColor : 'currentColor'})`
+                  }}
+                  // Add a tiny white center for "hot" look
+                  stroke="rgba(255,255,255,0.4)"
+                  strokeWidth="1"
+                />
+              </g>
+            )
+          })}
         </svg>
       </div>
 
