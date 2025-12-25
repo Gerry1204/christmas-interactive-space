@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: '/christmas-interactive-space/', // Base URL for GitHub Pages
+    base: './', // Use relative path for flexibility on GitHub Pages
     server: {
       port: 3000,
       host: '0.0.0.0',
