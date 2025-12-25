@@ -91,7 +91,7 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode, brightness, sp
   return (
     <div className="relative w-80 h-96 flex justify-center items-end select-none drop-shadow-2xl">
       {/* Container for the realistic tree */}
-      <svg viewBox="0 0 200 300" className="w-full h-full z-10 overflow-visible">
+      <svg viewBox="0 0 200 330" className="w-full h-full z-10 overflow-visible">
         <defs>
           <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="#3E2723" />
@@ -118,11 +118,11 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode, brightness, sp
           </filter>
         </defs>
 
-        {/* Shadow Base */}
-        <ellipse cx="100" cy="270" rx="60" ry="10" fill="black" opacity="0.3" filter="url(#glow)" />
+        {/* Shadow Base - Moved down */}
+        <ellipse cx="100" cy="305" rx="60" ry="10" fill="black" opacity="0.3" filter="url(#glow)" />
 
-        {/* Trunk */}
-        <rect x="90" y="240" width="20" height="40" fill="url(#trunkGrad)" rx="2" />
+        {/* Trunk - Longer */}
+        <rect x="90" y="240" width="20" height="70" fill="url(#trunkGrad)" rx="2" />
 
         {/* Tree Layers - Using lots of paths for texture */}
         {/* Layer 5 (Bottom) */}
@@ -166,7 +166,7 @@ const ChristmasTree: React.FC<ChristmasTreeProps> = ({ lightMode, brightness, sp
 
       {/* HTML Overlay for LED Lights (Better for glow effects than SVG) */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-20">
-        <svg viewBox="0 0 200 300" className="w-full h-full overflow-visible">
+        <svg viewBox="0 0 200 330" className="w-full h-full overflow-visible">
           {lights.map((pos, i) => {
             const isStaticOrBreathing = lightMode === LightMode.STATIC || lightMode === LightMode.BREATHING;
 

@@ -15,6 +15,7 @@ const Icons = {
   Pause: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>,
   Settings: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>,
   X: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>,
+  Dice: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><path d="M16 8h.01" /><path d="M8 8h.01" /><path d="M8 16h.01" /><path d="M16 16h.01" /><path d="M12 12h.01" /></svg>,
 };
 
 const App: React.FC = () => {
@@ -269,9 +270,17 @@ const App: React.FC = () => {
         </div>
       </div>
 
+      {/* Top Banner: Character Status */}
+      {selectedChar && (
+        <div className="absolute top-6 left-0 w-full text-center z-20 pointer-events-none">
+          <div className="inline-block px-6 py-2 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-white font-bold tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.2)] animate-fade-in">
+            🎄 正在與 <span className="text-yellow-300 text-lg">{selectedChar.name}</span> 一起過聖誕節 🎅
+          </div>
+        </div>
+      )}
 
       {/* Main Content Container (Tree & Quote) */}
-      <div className="relative z-10 flex-grow flex flex-col items-center justify-center p-4">
+      <div className="relative z-10 flex-grow flex flex-col items-center justify-center p-4 pb-16">
 
         {/* Quote Bubble */}
         <div className={`mb-8 p-6 rounded-2xl backdrop-blur-md shadow-lg max-w-md text-center transform transition-all hover:scale-105 border border-white/20 bg-white/10`}>
@@ -281,24 +290,39 @@ const App: React.FC = () => {
         </div>
 
         {/* Center Scene: Tree Only */}
-        <div className="flex flex-col md:flex-row items-end justify-center items-center gap-4">
+        <div className="flex flex-col md:flex-row items-end justify-center items-center gap-4 relative">
           <ChristmasTree
             lightMode={lightMode}
             brightness={brightness}
             speed={speed}
             customColor={customColor}
           />
+          {/* Dice for Random Quote - Under tree */}
+          <button
+            onClick={handleRandomQuote}
+            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 translate-y-full hover:scale-110 active:scale-95 transition-all text-white/50 hover:text-yellow-300 drop-shadow-[0_0_10px_rgba(255,255,0,0.5)] z-20 group"
+            title="點擊獲取祝福"
+          >
+            <div className="bg-black/40 p-3 rounded-xl border border-white/10 backdrop-blur-sm group-hover:bg-black/60 group-hover:border-yellow-300/50 transition-colors">
+              <Icons.Dice />
+            </div>
+          </button>
         </div>
 
       </div>
 
+      {/* Footer Clock - Moved to Bottom Center */}
+      <div className="absolute bottom-4 left-0 w-full text-center z-10 text-white/60 text-sm font-mono tracking-[0.2em] drop-shadow-md">
+        {formatTime(currentTime)}
+      </div>
+
       {/* --- LEFT SIDEBAR: Scene & Character --- */}
-      <div className="hidden lg:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-20 w-64 flex flex-col gap-6">
-        <div className={`p-5 rounded-2xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-6 transition-all duration-500`}>
+      <div className="hidden lg:flex fixed left-6 top-1/2 transform -translate-y-1/2 z-20 w-72 flex-col gap-6">
+        <div className={`p-5 rounded-3xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-6 transition-all duration-500`}>
 
           {/* Scene Switcher */}
           <div className="flex flex-col gap-3">
-            <label className={`text-xs font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
+            <label className={`text-base font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
               <Icons.Home /> 場景切換
             </label>
             <div className="flex flex-col gap-2">
@@ -306,13 +330,13 @@ const App: React.FC = () => {
                 <button
                   key={s}
                   onClick={() => setScene(s)}
-                  className={`w-full py-2 px-3 rounded-lg text-xs font-medium text-left transition-all flex items-center justify-between group ${scene === s
+                  className={`w-full py-3 px-4 rounded-xl text-sm font-medium text-left transition-all flex items-center justify-between group ${scene === s
                     ? 'bg-white text-black shadow-lg scale-105'
-                    : 'bg-black/20 text-white/70 hover:bg-black/40 hover:pl-4'
+                    : 'bg-black/20 text-white/80 hover:bg-black/40 hover:pl-5'
                     }`}
                 >
                   {SCENE_CONFIG[s].description}
-                  {scene === s && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>}
+                  {scene === s && <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>}
                 </button>
               ))}
             </div>
@@ -320,12 +344,12 @@ const App: React.FC = () => {
 
           {/* Character Selector */}
           <div className="flex flex-col gap-3">
-            <label className={`text-xs font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
+            <label className={`text-base font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
               <Icons.MessageSquare /> 召喚夥伴
             </label>
             <div className="relative group">
               <select
-                className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50 appearance-none cursor-pointer hover:bg-black/30 transition-colors"
+                className="w-full bg-black/20 border border-white/10 rounded-xl p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/50 appearance-none cursor-pointer hover:bg-black/30 transition-colors"
                 onChange={(e) => {
                   const char = CHARACTERS.find(c => c.id === e.target.value);
                   setSelectedChar(char || null);
@@ -343,7 +367,7 @@ const App: React.FC = () => {
               </div>
             </div>
             {selectedChar && (
-              <div className="text-[10px] text-white/50 text-center italic">
+              <div className="text-[10px] text-white/60 text-center italic mt-1 font-medium">
                 * 點擊畫面任意處可固定/移動 *
               </div>
             )}
@@ -353,12 +377,12 @@ const App: React.FC = () => {
       </div>
 
       {/* --- RIGHT SIDEBAR: Light & Music --- */}
-      <div className="hidden lg:flex fixed right-4 top-1/2 transform -translate-y-1/2 z-20 w-72 flex flex-col gap-6">
-        <div className={`p-5 rounded-2xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-6 transition-all duration-500`}>
+      <div className="hidden lg:flex fixed right-6 top-1/2 transform -translate-y-1/2 z-20 w-80 flex-col gap-6">
+        <div className={`p-5 rounded-3xl backdrop-blur-xl shadow-2xl border ${currentSceneConfig.glassClass} flex flex-col gap-5 transition-all duration-500`}>
 
           {/* Light Controls */}
-          <div className="flex flex-col gap-2">
-            <label className={`text-xs font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
+          <div className="flex flex-col gap-3">
+            <label className={`text-base font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2 border-b border-white/10 pb-2`}>
               <Icons.Lightbulb /> 燈光氛圍
             </label>
 
@@ -366,7 +390,7 @@ const App: React.FC = () => {
               {/* Mode Switcher */}
               <button
                 onClick={toggleLightMode}
-                className={`w-full py-2.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2 mb-1
+                className={`w-full py-3 rounded-xl text-sm font-bold shadow-md transition-all flex items-center justify-center gap-2 mb-1
                   ${lightMode === LightMode.STATIC ? 'bg-white/20 text-yellow-100 ring-1 ring-yellow-400/50' :
                     lightMode === LightMode.RAINBOW ? 'bg-gradient-to-r from-red-500/50 to-blue-500/50 animate-pulse' :
                       'bg-green-500/30 text-green-100 ring-1 ring-green-400/50'}`}
@@ -376,31 +400,31 @@ const App: React.FC = () => {
               </button>
 
               {/* Controls Grid */}
-              <div className="flex flex-col gap-4 text-xs text-white/80 bg-black/20 p-3 rounded-lg">
+              <div className="flex flex-col gap-4 text-sm text-white/90 bg-black/20 p-4 rounded-xl">
 
                 {/* Brightness */}
                 <div className="flex flex-col gap-1.5">
-                  <span className="flex justify-between text-[10px] uppercase tracking-wider opacity-70">
+                  <span className="flex justify-between text-sm uppercase tracking-wider opacity-80 font-medium">
                     亮度 <span>{Math.round(brightness * 100)}%</span>
                   </span>
                   <input
                     type="range" min="0.2" max="2" step="0.1"
                     value={brightness}
                     onChange={(e) => setBrightness(parseFloat(e.target.value))}
-                    className="accent-yellow-400 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer w-full"
+                    className="accent-yellow-400 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer w-full"
                   />
                 </div>
 
                 {/* Speed */}
                 <div className="flex flex-col gap-1.5">
-                  <span className="flex justify-between text-[10px] uppercase tracking-wider opacity-70">
+                  <span className="flex justify-between text-sm uppercase tracking-wider opacity-80 font-medium">
                     速度 <span>{speed}s</span>
                   </span>
                   <input
                     type="range" min="0.1" max="5" step="0.1"
                     value={speed}
                     onChange={(e) => setSpeed(parseFloat(e.target.value))}
-                    className="accent-blue-400 h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer w-full"
+                    className="accent-blue-400 h-2 bg-white/10 rounded-lg appearance-none cursor-pointer w-full"
                     disabled={lightMode === LightMode.STATIC}
                     style={{ opacity: lightMode === LightMode.STATIC ? 0.3 : 1 }}
                   />
@@ -409,13 +433,13 @@ const App: React.FC = () => {
                 {/* Color Picker */}
                 {(lightMode !== LightMode.RAINBOW) && (
                   <div className="border-t border-white/10 pt-3 mt-1">
-                    <div className="flex gap-2 justify-between items-center">
-                      <div className="flex gap-1.5 flex-1 flex-wrap">
+                    <div className="flex gap-3 justify-between items-center">
+                      <div className="flex gap-2 flex-1 flex-wrap">
                         {['#fef08a', '#fda4af', '#93c5fd', '#86efac', '#d8b4fe', '#ffffff'].map(color => (
                           <button
                             key={color}
                             onClick={() => setCustomColor(color)}
-                            className={`w-5 h-5 rounded-full border border-white/20 transition-all hover:scale-125 hover:z-10 shadow-sm ${customColor === color ? 'ring-2 ring-white scale-125 shadow-md z-10' : ''}`}
+                            className={`w-6 h-6 rounded-full border border-white/20 transition-all hover:scale-125 hover:z-10 shadow-sm ${customColor === color ? 'ring-2 ring-white scale-125 shadow-md z-10' : ''}`}
                             style={{ backgroundColor: color }}
                             title={color}
                           />
@@ -426,7 +450,7 @@ const App: React.FC = () => {
                           type="color"
                           value={customColor}
                           onChange={(e) => setCustomColor(e.target.value)}
-                          className="w-7 h-7 rounded-full overflow-hidden border-2 border-white/20 p-0 cursor-pointer shadow-sm hover:scale-110 transition-transform"
+                          className="w-8 h-8 rounded-full overflow-hidden border-2 border-white/20 p-0 cursor-pointer shadow-sm hover:scale-110 transition-transform"
                         />
                       </div>
                     </div>
@@ -434,31 +458,25 @@ const App: React.FC = () => {
                 )}
               </div>
 
-              <button
-                onClick={handleRandomQuote}
-                className="w-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white py-2 rounded-lg text-[10px] tracking-widest shadow-sm transition-all border border-white/5"
-              >
-                ✨ 隨機祝福
-              </button>
             </div>
           </div>
 
           {/* Music Player */}
-          <div className="flex flex-col gap-3 pt-2 border-t border-white/10">
-            <label className={`text-xs font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2`}>
+          <div className="flex flex-col gap-3 pt-3 border-t border-white/10">
+            <label className={`text-base font-bold uppercase tracking-wider ${currentSceneConfig.accentColor} flex items-center gap-2`}>
               <Icons.Music /> 音樂播放
             </label>
-            <div className="flex items-center gap-3 bg-black/20 rounded-xl p-2 pr-3 border border-white/5 hover:bg-black/30 transition-colors">
+            <div className="flex items-center gap-3 bg-black/20 rounded-2xl p-3 pr-4 border border-white/5 hover:bg-black/30 transition-colors">
               <button
                 onClick={() => setIsPlaying(!isPlaying)}
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 hover:bg-white/20 hover:scale-105 transition-all text-white"
+                className="w-12 h-12 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 hover:scale-105 transition-all text-white"
               >
                 {isPlaying ? <Icons.Pause /> : <Icons.Play />}
               </button>
               <div className="flex-1 flex flex-col gap-0.5 overflow-hidden">
-                <span className="text-[10px] text-white/40 uppercase tracking-widest">Now Playing</span>
+                <span className="text-[10px] text-white/50 uppercase tracking-widest font-semibold">Now Playing</span>
                 <select
-                  className="bg-transparent text-xs text-white focus:outline-none font-bold w-full cursor-pointer hover:underline truncate"
+                  className="bg-transparent text-sm text-white focus:outline-none font-bold w-full cursor-pointer hover:underline truncate"
                   value={currentSong.id}
                   onChange={(e) => {
                     const song = SONGS.find(s => s.id === Number(e.target.value));
@@ -478,10 +496,7 @@ const App: React.FC = () => {
 
         </div>
 
-        {/* Footer Clock - Moved to Right Sidebar */}
-        <div className="text-right text-white/40 text-[10px] font-mono tracking-widest px-2">
-          {formatTime(currentTime)}
-        </div>
+
       </div>
     </div>
   );
