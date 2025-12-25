@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SceneType, LightMode, Character, Song } from './types';
-import { QUOTES, SONGS, CHARACTERS, SCENE_CONFIG } from './constants';
+import { SceneType, LightMode, Character, Song, Gift } from './types';
+import { GIFTS, QUOTES, SONGS, CHARACTERS, SCENE_CONFIG } from './constants';
 import Snowfall from './components/Snowfall';
 import ChristmasTree from './components/ChristmasTree';
 import CharacterDisplay from './components/CharacterDisplay';
@@ -23,8 +23,21 @@ const App: React.FC = () => {
   const [scene, setScene] = useState<SceneType>(SceneType.LAB);
   const [lightMode, setLightMode] = useState<LightMode>(LightMode.STATIC);
   const [selectedChar, setSelectedChar] = useState<Character | null>(null);
-  const [quote, setQuote] = useState<string>("點擊按鈕獲取祝福！");
+  const [quote, setQuote] = useState<string>("🎄 點擊此處領取聖誕祝福 🎄");
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  // Falling Gift State
+  const [fallingGift, setFallingGift] = useState<{
+    data: Gift | null;
+    isActive: boolean;
+    isOpen: boolean;
+    key: number;
+  }>({
+    data: null,
+    isActive: false,
+    isOpen: false,
+    key: 0
+  });
 
   const [characterPos, setCharacterPos] = useState({ x: -100, y: -100 }); // Start hidden
   const [isFloating, setIsFloating] = useState(false);
@@ -90,6 +103,37 @@ const App: React.FC = () => {
   const handleRandomQuote = () => {
     const random = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     setQuote(random);
+  };
+
+  const handleRandomGift = () => {
+    if (fallingGift.isActive) return; // Prevent spam
+
+    // Weighted Probability: 20% Prank, 80% Nice
+    const prankGifts = GIFTS.filter(g => g.isPrank);
+    const niceGifts = GIFTS.filter(g => !g.isPrank);
+
+    const isPrankTime = Math.random() < 0.2; // 20% chance
+    const pool = (isPrankTime && prankGifts.length > 0) ? prankGifts : niceGifts;
+
+    const randomGift = pool[Math.floor(Math.random() * pool.length)];
+
+    // 1. Reset and Start Falling
+    setFallingGift({
+      data: randomGift,
+      isActive: true,
+      isOpen: false,
+      key: Date.now()
+    });
+
+    // 2. Open Gift after falling duration
+    setTimeout(() => {
+      setFallingGift(prev => ({ ...prev, isOpen: true }));
+    }, 1500);
+
+    // 3. Close/Reset after showing
+    setTimeout(() => {
+      setFallingGift(prev => ({ ...prev, isActive: false, isOpen: false }));
+    }, 6000);
   };
 
   const toggleLightMode = () => {
@@ -263,10 +307,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-center text-white/30 text-xs font-mono mt-8">
-            {formatTime(currentTime)}
-          </div>
-
         </div>
       </div>
 
@@ -279,17 +319,73 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content Container (Tree & Quote) */}
+      {/* Main Content Container (Tree & Gift) */}
       <div className="relative z-10 flex-grow flex flex-col items-center justify-center p-4 pb-16">
 
-        {/* Quote Bubble */}
-        <div className={`mb-8 p-6 rounded-2xl backdrop-blur-md shadow-lg max-w-md text-center transform transition-all hover:scale-105 border border-white/20 bg-white/10`}>
-          <p className="text-lg md:text-xl font-medium drop-shadow-md leading-relaxed tracking-wide">
+        {/* Quote/Blessing Bubble (Above Tree) - Click to Change */}
+        <div
+          onClick={handleRandomQuote}
+          className={`mb-8 p-6 rounded-2xl backdrop-blur-md shadow-lg max-w-md text-center transform transition-all hover:scale-105 active:scale-95 cursor-pointer border border-white/20 bg-white/10 select-none group`}
+          title="點擊切換祝福"
+        >
+          <p className="text-lg md:text-xl font-medium drop-shadow-md leading-relaxed tracking-wide group-hover:text-yellow-200 transition-colors">
             {quote}
           </p>
+          <span className="text-[10px] text-white/30 block mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            ( 點擊換一句 )
+          </span>
         </div>
 
-        {/* Center Scene: Tree Only */}
+        {/* --- FALLING GIFT ANIMATION --- */}
+        {fallingGift.isActive && fallingGift.data && (
+          <div
+            key={fallingGift.key}
+            className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-[1500ms] ease-out flex flex-col items-center justify-center pointer-events-none`}
+            style={{
+              top: fallingGift.isOpen ? '50%' : '10%', // Start top, end center
+              transform: `translate(-50%, ${fallingGift.isOpen ? '-50%' : '0'}) scale(${fallingGift.isOpen ? 1.0 : 0.5})`
+            }}
+          >
+            {/* The Gift Box (Closed) */}
+            <div className={`text-6xl filter drop-shadow-2xl transition-all duration-500 ${fallingGift.isOpen ? 'opacity-0 scale-150 hidden' : 'opacity-100 animate-bounce'}`}>
+              🎁
+            </div>
+
+            {/* The Opened Gift Content (Card) */}
+            <div className={`transition-all duration-500 transform ${fallingGift.isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-0'} bg-black/80 backdrop-blur-xl p-6 rounded-3xl border-2 ${fallingGift.data.isPrank ? 'border-red-500/50 shadow-[0_0_50px_rgba(239,68,68,0.3)]' : 'border-yellow-400/50 shadow-[0_0_50px_rgba(253,224,71,0.3)]'} text-center max-w-sm w-[90vw] pointer-events-auto flex flex-col items-center gap-4`}>
+
+              {/* Header Icon */}
+              <div className="text-4xl animate-bounce">
+                {fallingGift.data.isPrank ? '😈' : '🎉'}
+              </div>
+
+              {/* Gift Image */}
+              <div className="relative group w-48 h-48 md:w-56 md:h-56">
+                <div className={`absolute inset-0 rounded-xl blur-lg opacity-50 ${fallingGift.data.isPrank ? 'bg-red-500' : 'bg-yellow-400'}`}></div>
+                <img
+                  src={fallingGift.data.imageUrl}
+                  alt={fallingGift.data.text}
+                  className="w-full h-full object-cover rounded-xl shadow-2xl relative z-10 border-2 border-white/20"
+                />
+              </div>
+
+              {/* Text Content */}
+              <div className="flex flex-col gap-1">
+                <h3 className="text-xl md:text-2xl font-bold text-white">
+                  {fallingGift.data.text}
+                </h3>
+                {fallingGift.data.description && (
+                  <p className={`text-sm md:text-base font-medium ${fallingGift.data.isPrank ? 'text-red-200' : 'text-yellow-100'}`}>
+                    {fallingGift.data.description}
+                  </p>
+                )}
+              </div>
+
+            </div>
+          </div>
+        )}
+
+        {/* Center Scene: Tree & Dice */}
         <div className="flex flex-col md:flex-row items-end justify-center items-center gap-4 relative">
           <ChristmasTree
             lightMode={lightMode}
@@ -297,16 +393,22 @@ const App: React.FC = () => {
             speed={speed}
             customColor={customColor}
           />
-          {/* Dice for Random Quote - Under tree */}
-          <button
-            onClick={handleRandomQuote}
-            className="absolute bottom-4 left-1/2 transform -translate-x-1/2 translate-y-full hover:scale-110 active:scale-95 transition-all text-white/50 hover:text-yellow-300 drop-shadow-[0_0_10px_rgba(255,255,0,0.5)] z-20 group"
-            title="點擊獲取祝福"
-          >
-            <div className="bg-black/40 p-3 rounded-xl border border-white/10 backdrop-blur-sm group-hover:bg-black/60 group-hover:border-yellow-300/50 transition-colors">
-              <Icons.Dice />
+
+          {/* Dice for Random Gift - Positioned Right Side */}
+          <div className="absolute -bottom-2 right-0 md:right-[-80px] flex flex-col items-center animate-bounce-slow z-20">
+            <div className="mb-2 text-xs font-bold bg-white text-black px-2 py-1 rounded-lg shadow-lg relative whitespace-nowrap hidden md:block">
+              🎁 看看有什麼禮物?
+              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
             </div>
-          </button>
+
+            <button
+              onClick={handleRandomGift}
+              className="bg-white text-black p-3 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.5)] transform hover:rotate-180 transition-all duration-500 hover:scale-110 active:scale-95 group border-2 border-slate-200"
+              title="點擊獲取禮物"
+            >
+              <Icons.Dice />
+            </button>
+          </div>
         </div>
 
       </div>

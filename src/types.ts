@@ -24,3 +24,11 @@ export interface Song {
   title: string;
   url: string;
 }
+
+export interface Gift {
+  id: string;
+  text: string;
+  imageUrl: string;
+  description?: string;
+  isPrank?: boolean;
+}
