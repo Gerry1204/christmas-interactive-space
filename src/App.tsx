@@ -112,10 +112,18 @@ const App: React.FC = () => {
     const prankGifts = GIFTS.filter(g => g.isPrank);
     const niceGifts = GIFTS.filter(g => !g.isPrank);
 
+    // Safety check ensuring we have items
+    if (prankGifts.length === 0 && niceGifts.length === 0) return;
+
     const isPrankTime = Math.random() < 0.2; // 20% chance
-    const pool = (isPrankTime && prankGifts.length > 0) ? prankGifts : niceGifts;
+
+    // Fallback to full list if specific pool is empty
+    let pool = (isPrankTime && prankGifts.length > 0) ? prankGifts : niceGifts;
+    if (pool.length === 0) pool = GIFTS;
 
     const randomGift = pool[Math.floor(Math.random() * pool.length)];
+
+    if (!randomGift) return; // Ultimate safety check
 
     // 1. Reset and Start Falling
     setFallingGift({
